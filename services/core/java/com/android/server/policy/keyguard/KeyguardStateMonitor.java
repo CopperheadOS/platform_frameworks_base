@@ -20,6 +20,7 @@ import android.app.ActivityManager;
 import android.content.Context;
 import android.os.RemoteException;
 import android.os.ServiceManager;
+import android.os.SystemProperties;
 import android.security.keystore.IKeystoreService;
 import android.util.Slog;
 
@@ -92,6 +93,9 @@ public class KeyguardStateMonitor extends IKeyguardStateCallback.Stub {
 
     @Override // Binder interface
     public void onShowingStateChanged(boolean showing) {
+        if ("dynamic".equals(SystemProperties.get("persist.security.deny_new_usb"))) {
+            SystemProperties.set("security.deny_new_usb", showing ? "1" : "0");
+        }
         mIsShowing = showing;
 
         mCallback.onShowingChanged();
