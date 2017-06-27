@@ -881,7 +881,7 @@ class ZygoteConnection {
         } else {
             if (!isZygote) {
                 ExecInit.execApplication(parsedArgs.niceName, parsedArgs.targetSdkVersion,
-                        VMRuntime.getCurrentInstructionSet(), parsedArgs.remainingArgs);
+                        VMRuntime.getCurrentInstructionSet(), parsedArgs.debugFlags, parsedArgs.remainingArgs);
 
                 // Should not get here.
                 throw new IllegalStateException("ExecInit.execApplication unexpectedly returned");
