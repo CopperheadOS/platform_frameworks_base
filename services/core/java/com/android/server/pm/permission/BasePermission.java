@@ -78,7 +78,7 @@ public final class BasePermission {
     @Retention(RetentionPolicy.SOURCE)
     public @interface ProtectionLevel {}
 
-    final String name;
+    public final String name;
 
     final @PermissionType int type;
 
