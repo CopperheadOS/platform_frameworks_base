@@ -241,4 +241,6 @@
 
     <!-- Default for Settings.System.TEXT_SHOW_PASSWORD -->
     <bool name="def_text_show_password">false</bool>
+
+    <integer name="def_tether_dun_required">0</integer>
 </resources>
