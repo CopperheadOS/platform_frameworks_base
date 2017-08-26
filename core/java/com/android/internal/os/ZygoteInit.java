@@ -156,7 +156,7 @@ public class ZygoteInit {
         preloadTextResources();
         // Ask the WebViewFactory to do any initialization that must run in the zygote process,
         // for memory sharing purposes.
-        WebViewFactory.prepareWebViewInZygote();
+        //WebViewFactory.prepareWebViewInZygote();
         endPreload();
         warmUpJcaProviders();
         Log.d(TAG, "end preload");
