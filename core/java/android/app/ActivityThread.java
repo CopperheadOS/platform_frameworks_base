@@ -152,6 +152,7 @@ import android.view.ViewRootImpl;
 import android.view.Window;
 import android.view.WindowManager;
 import android.view.WindowManagerGlobal;
+import android.security.keystore.AndroidKeyStoreProvider;
 import android.webkit.WebView;
 
 import com.android.internal.annotations.GuardedBy;
@@ -7319,6 +7320,8 @@ public final class ActivityThread extends ClientTransactionHandler {
         CloseGuard.setEnabled(false);
 
         Environment.initForCurrentUser();
+
+        AndroidKeyStoreProvider.install();
 
         // Make sure TrustedCertificateStore looks in the right place for CA certificates
         final File configDir = Environment.getUserConfigDirectory(UserHandle.myUserId());
