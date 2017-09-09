@@ -116,7 +116,7 @@ public class ZygoteInit {
     /**
      * Controls whether we should preload resources during zygote init.
      */
-    public static final boolean PRELOAD_RESOURCES = true;
+    public static final boolean PRELOAD_RESOURCES = false;
 
     private static final int UNPRIVILEGED_UID = 9999;
     private static final int UNPRIVILEGED_GID = 9999;
