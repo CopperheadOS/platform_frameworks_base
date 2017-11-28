@@ -1081,6 +1081,18 @@ public class AppOpsService extends IAppOpsService.Stub {
 
     private int noteOperationUnchecked(int code, int uid, String packageName,
             int proxyUid, String proxyPackageName) {
+        final int switchCode = AppOpsManager.opToSwitch(code);
+        final boolean isCodeBgOp = AppOpsManager.isBgOp(code);
+        final boolean isSwitchCodeBgOp = AppOpsManager.isBgOp(switchCode);
+        boolean fg = false;
+        if (isCodeBgOp || isSwitchCodeBgOp) {
+            try {
+                // must be done before synchronized (this) to avoid deadlocks
+                fg = ActivityManager.getService().isAppForeground(uid);
+            } catch (RemoteException e) {
+                Log.e(TAG, "startOperation: failed to get ActivityManager service");
+            }
+        }
         synchronized (this) {
             Ops ops = getOpsRawLocked(uid, packageName, true);
             if (ops == null) {
@@ -1097,7 +1109,6 @@ public class AppOpsService extends IAppOpsService.Stub {
                         + " code " + code + " time=" + op.time + " duration=" + op.duration);
             }
             op.duration = 0;
-            final int switchCode = AppOpsManager.opToSwitch(code);
             UidState uidState = ops.uidState;
             // If there is a non-default per UID policy (we set UID op mode only if
             // non-default) it takes over, otherwise use the per package policy.
@@ -1120,6 +1131,25 @@ public class AppOpsService extends IAppOpsService.Stub {
                     return switchOp.mode;
                 }
             }
+
+            if (isCodeBgOp || isSwitchCodeBgOp) {
+                if (!fg) {
+                    Op bgOp;
+                    if (isCodeBgOp) {
+                        bgOp = getOpLocked(ops, AppOpsManager.opToBgOp(code), true);
+                    } else { // isBgOp(switchCode)
+                        bgOp = getOpLocked(ops, AppOpsManager.opToBgOp(switchCode), true);
+                    }
+                    if (bgOp.mode != AppOpsManager.MODE_ALLOWED) {
+                        if (DEBUG) Log.d(TAG, "noteOperation: reject #" + op.mode + " for code "
+                                + switchCode + " (" + code + ") uid " + uid + " package "
+                                + packageName + " as it is not a foreground app");
+                        op.rejectTime = System.currentTimeMillis();
+                        return AppOpsManager.MODE_IGNORED;
+                    }
+                }
+            }
+
             if (DEBUG) Log.d(TAG, "noteOperation: allowing code " + code + " uid " + uid
                     + " package " + packageName);
             op.time = System.currentTimeMillis();
@@ -1139,6 +1169,18 @@ public class AppOpsService extends IAppOpsService.Stub {
             return  AppOpsManager.MODE_IGNORED;
         }
         ClientState client = (ClientState)token;
+        final int switchCode = AppOpsManager.opToSwitch(code);
+        final boolean isCodeBgOp = AppOpsManager.isBgOp(code);
+        final boolean isSwitchCodeBgOp = AppOpsManager.isBgOp(switchCode);
+        boolean fg = false;
+        if (isCodeBgOp || isSwitchCodeBgOp) {
+            try {
+                // must be done before synchronized (this) to avoid deadlocks
+                fg = ActivityManager.getService().isAppForeground(uid);
+            } catch (RemoteException e) {
+                Log.e(TAG, "startOperation: failed to get ActivityManager service");
+            }
+        }
         synchronized (this) {
             Ops ops = getOpsRawLocked(uid, resolvedPackageName, true);
             if (ops == null) {
@@ -1150,7 +1192,6 @@ public class AppOpsService extends IAppOpsService.Stub {
             if (isOpRestrictedLocked(uid, code, resolvedPackageName)) {
                 return AppOpsManager.MODE_IGNORED;
             }
-            final int switchCode = AppOpsManager.opToSwitch(code);
             UidState uidState = ops.uidState;
             if (uidState.opModes != null) {
                 final int uidMode = uidState.opModes.get(switchCode);
@@ -1170,6 +1211,25 @@ public class AppOpsService extends IAppOpsService.Stub {
                 op.rejectTime = System.currentTimeMillis();
                 return switchOp.mode;
             }
+
+            if (isCodeBgOp || isSwitchCodeBgOp) {
+                if (!fg) {
+                    Op bgOp;
+                    if (isCodeBgOp) {
+                        bgOp = getOpLocked(ops, AppOpsManager.opToBgOp(code), true);
+                    } else { // isBgOp(switchCode)
+                        bgOp = getOpLocked(ops, AppOpsManager.opToBgOp(switchCode), true);
+                    }
+                    if (bgOp.mode != AppOpsManager.MODE_ALLOWED) {
+                        if (DEBUG) Log.d(TAG, "startOperation: reject #" + op.mode + " for code "
+                                + switchCode + " (" + code + ") uid " + uid + " package "
+                                + packageName + " as it is not a foreground app");
+                        op.rejectTime = System.currentTimeMillis();
+                        return AppOpsManager.MODE_IGNORED;
+                    }
+                }
+            }
+
             if (DEBUG) Log.d(TAG, "startOperation: allowing code " + code + " uid " + uid
                     + " package " + resolvedPackageName);
             if (op.nesting == 0) {
