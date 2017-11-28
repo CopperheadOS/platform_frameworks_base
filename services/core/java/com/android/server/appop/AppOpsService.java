@@ -39,6 +39,7 @@ import android.Manifest;
 import android.annotation.NonNull;
 import android.annotation.Nullable;
 import android.app.ActivityManager;
+import android.app.ActivityManagerInternal;
 import android.app.ActivityThread;
 import android.app.AppGlobals;
 import android.app.AppOpsManager;
@@ -2006,6 +2007,15 @@ public class AppOpsService extends IAppOpsService.Stub {
 
     private int noteOperationUnchecked(int code, int uid, String packageName,
             int proxyUid, String proxyPackageName, @OpFlags int flags) {
+        final int switchCode = AppOpsManager.opToSwitch(code);
+        final boolean isCodeBgOp = AppOpsManager.isBgOp(code);
+        final boolean isSwitchCodeBgOp = AppOpsManager.isBgOp(switchCode);
+        boolean fg = false;
+        if (isCodeBgOp || isSwitchCodeBgOp) {
+            // must be done before synchronized (this) to avoid deadlocks
+            fg = LocalServices.getService(ActivityManagerInternal.class)
+                    .isAppForeground(uid);
+        }
         synchronized (this) {
             final Ops ops = getOpsRawLocked(uid, packageName, true /* edit */,
                     false /* uidMismatchExpected */);
@@ -2032,7 +2042,6 @@ public class AppOpsService extends IAppOpsService.Stub {
                                 uidState.state, uidState.state, flags));
             }
 
-            final int switchCode = AppOpsManager.opToSwitch(code);
             // If there is a non-default per UID policy (we set UID op mode only if
             // non-default) it takes over, otherwise use the per package policy.
             if (uidState.opModes != null && uidState.opModes.indexOfKey(switchCode) >= 0) {
@@ -2061,6 +2070,26 @@ public class AppOpsService extends IAppOpsService.Stub {
                             uidState.state, flags);
                     scheduleOpNotedIfNeededLocked(code, uid, packageName, mode);
                     return mode;
+                }
+            }
+            if (isCodeBgOp || isSwitchCodeBgOp) {
+                if (!fg) {
+                    Op bgOp;
+                    if (isCodeBgOp) {
+                        bgOp = getOpLocked(ops, AppOpsManager.opToBgOp(code), true);
+                    } else { // isBgOp(switchCode)
+                        bgOp = getOpLocked(ops, AppOpsManager.opToBgOp(switchCode), true);
+                    }
+                    if (bgOp.mode != AppOpsManager.MODE_ALLOWED) {
+                        if (DEBUG) Slog.d(TAG, "noteOperation: reject #" + op.mode + " for code "
+                                + switchCode + " (" + code + ") uid " + uid + " package "
+                                + packageName + " as it is not a foreground app");
+                        op.rejected(System.currentTimeMillis(), proxyUid, proxyPackageName,
+                                uidState.state, flags);
+                        mHistoricalRegistry.incrementOpRejected(code, uid, packageName,
+                                uidState.state, flags);
+                        return AppOpsManager.MODE_IGNORED;
+                    }
                 }
             }
             if (DEBUG) Slog.d(TAG, "noteOperation: allowing code " + code + " uid " + uid
@@ -2176,6 +2205,15 @@ public class AppOpsService extends IAppOpsService.Stub {
             return  AppOpsManager.MODE_IGNORED;
         }
         ClientState client = (ClientState)token;
+        final int switchCode = AppOpsManager.opToSwitch(code);
+        final boolean isCodeBgOp = AppOpsManager.isBgOp(code);
+        final boolean isSwitchCodeBgOp = AppOpsManager.isBgOp(switchCode);
+        boolean fg = false;
+        if (isCodeBgOp || isSwitchCodeBgOp) {
+            // must be done before synchronized (this) to avoid deadlocks
+            fg = LocalServices.getService(ActivityManagerInternal.class)
+                    .isAppForeground(uid);
+        }
         synchronized (this) {
             final Ops ops = getOpsRawLocked(uid, resolvedPackageName, true /* edit */,
                     false /* uidMismatchExpected */);
@@ -2188,7 +2226,6 @@ public class AppOpsService extends IAppOpsService.Stub {
             if (isOpRestrictedLocked(uid, code, resolvedPackageName)) {
                 return AppOpsManager.MODE_IGNORED;
             }
-            final int switchCode = AppOpsManager.opToSwitch(code);
             final UidState uidState = ops.uidState;
             // If there is a non-default per UID policy (we set UID op mode only if
             // non-default) it takes over, otherwise use the per package policy.
@@ -2221,6 +2258,26 @@ public class AppOpsService extends IAppOpsService.Stub {
                     mHistoricalRegistry.incrementOpRejected(opCode, uid, packageName,
                             uidState.state, AppOpsManager.OP_FLAG_SELF);
                     return mode;
+                }
+            }
+            if (isCodeBgOp || isSwitchCodeBgOp) {
+                if (!fg) {
+                    Op bgOp;
+                    if (isCodeBgOp) {
+                        bgOp = getOpLocked(ops, AppOpsManager.opToBgOp(code), true);
+                    } else { // isBgOp(switchCode)
+                        bgOp = getOpLocked(ops, AppOpsManager.opToBgOp(switchCode), true);
+                    }
+                    if (bgOp.mode != AppOpsManager.MODE_ALLOWED) {
+                        if (DEBUG) Slog.d(TAG, "startOperation: reject #" + op.mode + " for code "
+                                + switchCode + " (" + code + ") uid " + uid + " package "
+                                + packageName + " as it is not a foreground app");
+                        op.rejected(System.currentTimeMillis(), -1 /*proxyUid*/,
+                                null /*proxyPackage*/, uidState.state, AppOpsManager.OP_FLAG_SELF);
+                        mHistoricalRegistry.incrementOpRejected(opCode, uid, packageName,
+                                uidState.state, AppOpsManager.OP_FLAG_SELF);
+                        return AppOpsManager.MODE_IGNORED;
+                    }
                 }
             }
             if (DEBUG) Slog.d(TAG, "startOperation: allowing code " + code + " uid " + uid
