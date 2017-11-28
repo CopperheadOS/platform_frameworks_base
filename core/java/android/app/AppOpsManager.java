@@ -353,7 +353,9 @@ public class AppOpsManager {
     /** @hide */
     public static final int OP_BLUETOOTH_SCAN = 77;
     /** @hide */
-    public static final int _NUM_OP = 78;
+    public static final int OP_READ_CLIPBOARD_BACKGROUND = 78;
+    /** @hide */
+    public static final int _NUM_OP = 79;
 
     /** Access to coarse location information. */
     public static final String OPSTR_COARSE_LOCATION = "android:coarse_location";
@@ -735,6 +737,7 @@ public class AppOpsManager {
             OP_MANAGE_IPSEC_TUNNELS,            // MANAGE_IPSEC_HANDOVERS
             OP_START_FOREGROUND,                // START_FOREGROUND
             OP_COARSE_LOCATION,                 // BLUETOOTH_SCAN
+            OP_READ_CLIPBOARD_BACKGROUND,       // READ_CLIPBOARD_BACKGROUND
     };
 
     /**
@@ -819,6 +822,7 @@ public class AppOpsManager {
             OPSTR_MANAGE_IPSEC_TUNNELS,
             OPSTR_START_FOREGROUND,
             OPSTR_BLUETOOTH_SCAN,
+            null
     };
 
     /**
@@ -904,6 +908,7 @@ public class AppOpsManager {
             "MANAGE_IPSEC_TUNNELS",
             "START_FOREGROUND",
             "BLUETOOTH_SCAN",
+            "READ_CLIPBOARD_BACKGROUND",
     };
 
     /**
@@ -989,6 +994,7 @@ public class AppOpsManager {
             null, // no permission for OP_MANAGE_IPSEC_TUNNELS
             Manifest.permission.FOREGROUND_SERVICE,
             null, // no permission for OP_BLUETOOTH_SCAN
+            null, // no permission for reading clipboard in the background
     };
 
     /**
@@ -1075,6 +1081,7 @@ public class AppOpsManager {
             null, // MANAGE_IPSEC_TUNNELS
             null, // START_FOREGROUND
             null, // maybe should be UserManager.DISALLOW_SHARE_LOCATION, //BLUETOOTH_SCAN
+            null, // READ_CLIPBOARD_BACKGROUND
     };
 
     /**
@@ -1160,6 +1167,7 @@ public class AppOpsManager {
             false, // MANAGE_IPSEC_HANDOVERS
             false, // START_FOREGROUND
             true, // BLUETOOTH_SCAN
+            false, // READ_CLIPBOARD_BACKGROUND
     };
 
     /**
@@ -1244,6 +1252,7 @@ public class AppOpsManager {
             AppOpsManager.MODE_ERRORED,  // MANAGE_IPSEC_TUNNELS
             AppOpsManager.MODE_ALLOWED,  // OP_START_FOREGROUND
             AppOpsManager.MODE_ALLOWED,  // OP_BLUETOOTH_SCAN
+            AppOpsManager.MODE_IGNORED,  // OP_READ_CLIPBOARD_BACKGROUND
     };
 
     /**
@@ -1332,6 +1341,7 @@ public class AppOpsManager {
             false, // MANAGE_IPSEC_TUNNELS
             false, // START_FOREGROUND
             false, // BLUETOOTH_SCAN
+            false, // READ_CLIPBOARD_BACKGROUND
     };
 
     /**
@@ -1392,6 +1402,9 @@ public class AppOpsManager {
                 sPermToOp.put(sOpPerms[op], op);
             }
         }
+
+        // All the Ops having a matching background op
+        sOpToBgOp.put(OP_READ_CLIPBOARD, OP_READ_CLIPBOARD_BACKGROUND);
     }
 
     /**
