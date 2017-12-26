@@ -356,8 +356,12 @@ public class AppOpsManager {
     public static final int OP_READ_CLIPBOARD_BACKGROUND = 78;
     /** @hide Record Audio in the background */
     public static final int OP_RECORD_AUDIO_BACKGROUND = 79;
+    /** @hide Other sensors access */
+    public static final int OP_OTHER_SENSORS = 80;
+    /** @hide Other sensors background access */
+    public static final int OP_OTHER_SENSORS_BACKGROUND = 81;
     /** @hide */
-    public static final int _NUM_OP = 80;
+    public static final int _NUM_OP = 82;
 
     /** Access to coarse location information. */
     public static final String OPSTR_COARSE_LOCATION = "android:coarse_location";
@@ -650,6 +654,7 @@ public class AppOpsManager {
             OP_WRITE_SETTINGS,
             OP_REQUEST_INSTALL_PACKAGES,
             OP_START_FOREGROUND,
+            OP_OTHER_SENSORS,
     };
 
     /**
@@ -741,6 +746,8 @@ public class AppOpsManager {
             OP_COARSE_LOCATION,                 // BLUETOOTH_SCAN
             OP_READ_CLIPBOARD_BACKGROUND,       // READ_CLIPBOARD_BACKGROUND
             OP_RECORD_AUDIO_BACKGROUND,         // RECORD_AUDIO_BACKGROUND
+            OP_OTHER_SENSORS,                   // OTHER_SENSORS
+            OP_OTHER_SENSORS_BACKGROUND         // OTHER_SENSORS_BACKGROUND
     };
 
     /**
@@ -825,6 +832,8 @@ public class AppOpsManager {
             OPSTR_MANAGE_IPSEC_TUNNELS,
             OPSTR_START_FOREGROUND,
             OPSTR_BLUETOOTH_SCAN,
+            null,
+            null,
             null,
             null,
     };
@@ -914,6 +923,8 @@ public class AppOpsManager {
             "BLUETOOTH_SCAN",
             "READ_CLIPBOARD_BACKGROUND",
             "RECORD_AUDIO_BACKGROUND",
+            "OTHER_SENSORS",
+            "OTHER_SENSORS_BACKGROUND",
     };
 
     /**
@@ -1001,6 +1012,8 @@ public class AppOpsManager {
             null, // no permission for OP_BLUETOOTH_SCAN
             null, // no permission for reading clipboard in the background
             android.Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.OTHER_SENSORS,
+            Manifest.permission.OTHER_SENSORS
     };
 
     /**
@@ -1089,6 +1102,8 @@ public class AppOpsManager {
             null, // maybe should be UserManager.DISALLOW_SHARE_LOCATION, //BLUETOOTH_SCAN
             null, // READ_CLIPBOARD_BACKGROUND
             UserManager.DISALLOW_RECORD_AUDIO, // RECORD_AUDIO_BACKGROUND
+            null, // OTHER_SENSORS
+            null, // OTHER_SENSORS_BACKGROUND
     };
 
     /**
@@ -1176,6 +1191,8 @@ public class AppOpsManager {
             true, // BLUETOOTH_SCAN
             false, // READ_CLIPBOARD_BACKGROUND
             false, // RECORD_AUDIO_BACKGROUND
+            false,
+            false,
     };
 
     /**
@@ -1262,6 +1279,8 @@ public class AppOpsManager {
             AppOpsManager.MODE_ALLOWED,  // OP_BLUETOOTH_SCAN
             AppOpsManager.MODE_IGNORED,  // OP_READ_CLIPBOARD_BACKGROUND
             AppOpsManager.MODE_ALLOWED,  // OP_RECORD_AUDIO_BACKGROUND
+            AppOpsManager.MODE_ALLOWED,  // OP_OTHER_SENSORS
+            AppOpsManager.MODE_ALLOWED,  // OP_OTHER_SENSORS_BACKGROUND
     };
 
     /**
@@ -1352,6 +1371,8 @@ public class AppOpsManager {
             false, // BLUETOOTH_SCAN
             false, // READ_CLIPBOARD_BACKGROUND
             false, // RECORD_AUDIO_BACKGROUND
+            false, // OTHER_SENSORS
+            false, // OTHER_SENSORS_BACKGROUND
     };
 
     /**
@@ -1416,6 +1437,7 @@ public class AppOpsManager {
         // All the Ops having a matching background op
         sOpToBgOp.put(OP_READ_CLIPBOARD, OP_READ_CLIPBOARD_BACKGROUND);
         sOpToBgOp.put(OP_RECORD_AUDIO, OP_RECORD_AUDIO_BACKGROUND);
+        sOpToBgOp.put(OP_OTHER_SENSORS, OP_OTHER_SENSORS_BACKGROUND);
     }
 
     /**
