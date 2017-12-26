@@ -256,8 +256,12 @@ public class AppOpsManager {
     public static final int OP_READ_CLIPBOARD_BACKGROUND = 70;
     /** @hide Record Audio in the background */
     public static final int OP_RECORD_AUDIO_BACKGROUND = 71;
+    /** @hide Other sensors access */
+    public static final int OP_OTHER_SENSORS = 72;
+    /** @hide Other sensors background access */
+    public static final int OP_OTHER_SENSORS_BACKGROUND = 73;
     /** @hide */
-    public static final int _NUM_OP = 72;
+    public static final int _NUM_OP = 74;
 
     /** Access to coarse location information. */
     public static final String OPSTR_COARSE_LOCATION = "android:coarse_location";
@@ -416,6 +420,7 @@ public class AppOpsManager {
             OP_SYSTEM_ALERT_WINDOW,
             OP_WRITE_SETTINGS,
             OP_REQUEST_INSTALL_PACKAGES,
+            OP_OTHER_SENSORS
     };
 
     /**
@@ -498,7 +503,9 @@ public class AppOpsManager {
             OP_INSTANT_APP_START_FOREGROUND,
             OP_ANSWER_PHONE_CALLS,
             OP_READ_CLIPBOARD_BACKGROUND,
-            OP_RECORD_AUDIO_BACKGROUND
+            OP_RECORD_AUDIO_BACKGROUND,
+            OP_OTHER_SENSORS,
+            OP_OTHER_SENSORS_BACKGROUND
     };
 
     /**
@@ -576,6 +583,8 @@ public class AppOpsManager {
             OPSTR_PICTURE_IN_PICTURE,
             OPSTR_INSTANT_APP_START_FOREGROUND,
             OPSTR_ANSWER_PHONE_CALLS,
+            null,
+            null,
             null,
             null
     };
@@ -656,7 +665,9 @@ public class AppOpsManager {
             "INSTANT_APP_START_FOREGROUND",
             "ANSWER_PHONE_CALLS",
             "READ_CLIPBOARD_BACKGROUND",
-            "RECORD_AUDIO_BACKGROUND"
+            "RECORD_AUDIO_BACKGROUND",
+            "OTHER_SENSORS",
+            "OTHER_SENSORS_BACKGROUND"
     };
 
     /**
@@ -735,7 +746,9 @@ public class AppOpsManager {
             Manifest.permission.INSTANT_APP_FOREGROUND_SERVICE,
             Manifest.permission.ANSWER_PHONE_CALLS,
             null, // no permission for reading clipboard in the background
-            android.Manifest.permission.RECORD_AUDIO
+            android.Manifest.permission.RECORD_AUDIO,
+            Manifest.permission.OTHER_SENSORS,
+            Manifest.permission.OTHER_SENSORS
     };
 
     /**
@@ -815,7 +828,9 @@ public class AppOpsManager {
             null, // INSTANT_APP_START_FOREGROUND
             null, // ANSWER_PHONE_CALLS
             null, // READ_CLIPBOARD_BACKGROUND
-            UserManager.DISALLOW_RECORD_AUDIO // RECORD_AUDIO_BACKGROUND
+            UserManager.DISALLOW_RECORD_AUDIO, // RECORD_AUDIO_BACKGROUND
+            null, // OTHER_SENSORS
+            null // OTHER_SENSORS_BACKGROUND
     };
 
     /**
@@ -894,7 +909,9 @@ public class AppOpsManager {
             false, // INSTANT_APP_START_FOREGROUND
             false, // ANSWER_PHONE_CALLS
             false, // READ_CLIPBOARD_BACKGROUND
-            false // RECORD_AUDIO_BACKGROUND
+            false, // RECORD_AUDIO_BACKGROUND
+            false,
+            false
     };
 
     /**
@@ -972,7 +989,9 @@ public class AppOpsManager {
             AppOpsManager.MODE_DEFAULT,  // OP_INSTANT_APP_START_FOREGROUND
             AppOpsManager.MODE_ALLOWED, // ANSWER_PHONE_CALLS
             AppOpsManager.MODE_IGNORED, // OP_READ_CLIPBOARD_BACKGROUND
-            AppOpsManager.MODE_ALLOWED // OP_RECORD_AUDIO_BACKGROUND
+            AppOpsManager.MODE_ALLOWED, // OP_RECORD_AUDIO_BACKGROUND
+            AppOpsManager.MODE_ALLOWED, // OP_OTHER_SENSORS
+            AppOpsManager.MODE_ALLOWED // OP_OTHER_SENSORS_BACKGROUND
     };
 
     /**
@@ -1054,6 +1073,8 @@ public class AppOpsManager {
             false,
             false, // ANSWER_PHONE_CALLS
             false,
+            false,
+            false,
             false
     };
 
@@ -1119,6 +1140,7 @@ public class AppOpsManager {
         // All the Ops having a matching background op
         sOpToBgOp.put(OP_READ_CLIPBOARD, OP_READ_CLIPBOARD_BACKGROUND);
         sOpToBgOp.put(OP_RECORD_AUDIO, OP_RECORD_AUDIO_BACKGROUND);
+        sOpToBgOp.put(OP_OTHER_SENSORS, OP_OTHER_SENSORS_BACKGROUND);
     }
 
     /**
