@@ -795,7 +795,20 @@ class ZygoteConnection {
             // Should not get here.
             throw new IllegalStateException("WrapperInit.execApplication unexpectedly returned");
         } else {
+            boolean forkZygote = false;
             if ("com.android.systemui".equals(parsedArgs.niceName)) {
+                forkZygote = true;
+            }
+            if (RoSystemProperties.DEBUGGABLE) {
+                if (parsedArgs.debugFlags > Zygote.DEBUG_ENABLE_JDWP) {
+                    forkZygote = true;
+                }
+            } else {
+                if (parsedArgs.debugFlags > 0) {
+                    forkZygote = true;
+                }
+            }
+            if (forkZygote) {
                 return ZygoteInit.zygoteInit(parsedArgs.targetSdkVersion,
                         parsedArgs.remainingArgs, null /* classLoader */);
             } else {
