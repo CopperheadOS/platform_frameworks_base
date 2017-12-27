@@ -260,8 +260,10 @@ public class AppOpsManager {
     public static final int OP_OTHER_SENSORS = 72;
     /** @hide Other sensors background access */
     public static final int OP_OTHER_SENSORS_BACKGROUND = 73;
+    /** @hide Access any kind of location info the background */
+    public static final int OP_COARSE_LOCATION_BACKGROUND = 74;
     /** @hide */
-    public static final int _NUM_OP = 74;
+    public static final int _NUM_OP = 75;
 
     /** Access to coarse location information. */
     public static final String OPSTR_COARSE_LOCATION = "android:coarse_location";
@@ -505,7 +507,8 @@ public class AppOpsManager {
             OP_READ_CLIPBOARD_BACKGROUND,
             OP_RECORD_AUDIO_BACKGROUND,
             OP_OTHER_SENSORS,
-            OP_OTHER_SENSORS_BACKGROUND
+            OP_OTHER_SENSORS_BACKGROUND,
+            OP_COARSE_LOCATION_BACKGROUND
     };
 
     /**
@@ -583,6 +586,7 @@ public class AppOpsManager {
             OPSTR_PICTURE_IN_PICTURE,
             OPSTR_INSTANT_APP_START_FOREGROUND,
             OPSTR_ANSWER_PHONE_CALLS,
+            null,
             null,
             null,
             null,
@@ -667,7 +671,8 @@ public class AppOpsManager {
             "READ_CLIPBOARD_BACKGROUND",
             "RECORD_AUDIO_BACKGROUND",
             "OTHER_SENSORS",
-            "OTHER_SENSORS_BACKGROUND"
+            "OTHER_SENSORS_BACKGROUND",
+            "COARSE_LOCATION_BACKGROUND"
     };
 
     /**
@@ -748,7 +753,8 @@ public class AppOpsManager {
             null, // no permission for reading clipboard in the background
             android.Manifest.permission.RECORD_AUDIO,
             Manifest.permission.OTHER_SENSORS,
-            Manifest.permission.OTHER_SENSORS
+            Manifest.permission.OTHER_SENSORS,
+            null
     };
 
     /**
@@ -830,7 +836,8 @@ public class AppOpsManager {
             null, // READ_CLIPBOARD_BACKGROUND
             UserManager.DISALLOW_RECORD_AUDIO, // RECORD_AUDIO_BACKGROUND
             null, // OTHER_SENSORS
-            null // OTHER_SENSORS_BACKGROUND
+            null, // OTHER_SENSORS_BACKGROUND
+            UserManager.DISALLOW_SHARE_LOCATION
     };
 
     /**
@@ -910,6 +917,7 @@ public class AppOpsManager {
             false, // ANSWER_PHONE_CALLS
             false, // READ_CLIPBOARD_BACKGROUND
             false, // RECORD_AUDIO_BACKGROUND
+            false,
             false,
             false
     };
@@ -991,7 +999,8 @@ public class AppOpsManager {
             AppOpsManager.MODE_IGNORED, // OP_READ_CLIPBOARD_BACKGROUND
             AppOpsManager.MODE_ALLOWED, // OP_RECORD_AUDIO_BACKGROUND
             AppOpsManager.MODE_ALLOWED, // OP_OTHER_SENSORS
-            AppOpsManager.MODE_ALLOWED // OP_OTHER_SENSORS_BACKGROUND
+            AppOpsManager.MODE_ALLOWED, // OP_OTHER_SENSORS_BACKGROUND
+            AppOpsManager.MODE_ALLOWED
     };
 
     /**
@@ -1075,6 +1084,7 @@ public class AppOpsManager {
             false,
             false,
             false,
+            false,
             false
     };
 
@@ -1141,6 +1151,7 @@ public class AppOpsManager {
         sOpToBgOp.put(OP_READ_CLIPBOARD, OP_READ_CLIPBOARD_BACKGROUND);
         sOpToBgOp.put(OP_RECORD_AUDIO, OP_RECORD_AUDIO_BACKGROUND);
         sOpToBgOp.put(OP_OTHER_SENSORS, OP_OTHER_SENSORS_BACKGROUND);
+        sOpToBgOp.put(OP_COARSE_LOCATION, OP_COARSE_LOCATION_BACKGROUND);
     }
 
     /**
