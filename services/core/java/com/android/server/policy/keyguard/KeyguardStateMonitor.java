@@ -90,6 +90,8 @@ public class KeyguardStateMonitor extends IKeyguardStateCallback.Stub {
             SystemProperties.set("security.deny_new_usb", showing ? "1" : "0");
         }
         mIsShowing = showing;
+
+        mCallback.onShowingChanged();
     }
 
     @Override // Binder interface
@@ -123,6 +125,7 @@ public class KeyguardStateMonitor extends IKeyguardStateCallback.Stub {
 
     public interface StateCallback {
         void onTrustedChanged();
+        void onShowingChanged();
     }
 
     public void dump(String prefix, PrintWriter pw) {
