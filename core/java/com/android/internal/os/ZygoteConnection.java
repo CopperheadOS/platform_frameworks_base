@@ -880,25 +880,13 @@ class ZygoteConnection {
             throw new IllegalStateException("WrapperInit.execApplication unexpectedly returned");
         } else {
             if (!isZygote) {
-                boolean forkZygote = false;
-                if ("com.android.systemui".equals(parsedArgs.niceName)) {
-                    forkZygote = true;
-                }
-                if (RoSystemProperties.DEBUGGABLE) {
-                    if (parsedArgs.debugFlags > Zygote.DEBUG_ENABLE_JDWP) {
-                        forkZygote = true;
-                    }
-                } else {
-                    if (parsedArgs.debugFlags > 0) {
-                        forkZygote = true;
-                    }
-                }
-                if (forkZygote) {
+                if (("com.android.systemui".equals(parsedArgs.niceName)) ||
+                        (parsedArgs.runtimeFlags & Zygote.DEBUG_ENABLE_JDWP) == 0) {
                     return ZygoteInit.zygoteInit(parsedArgs.targetSdkVersion,
                             parsedArgs.remainingArgs, null /* classLoader */);
                 } else {
                     ExecInit.execApplication(parsedArgs.niceName, parsedArgs.targetSdkVersion,
-                            VMRuntime.getCurrentInstructionSet(), parsedArgs.debugFlags, parsedArgs.remainingArgs);
+                            VMRuntime.getCurrentInstructionSet(), parsedArgs.runtimeFlags, parsedArgs.remainingArgs);
 
                     // Should not get here.
                     throw new IllegalStateException("ExecInit.execApplication unexpectedly returned");
