@@ -2267,6 +2267,7 @@ public final class Settings {
             MOVED_TO_SECURE.add(Secure.PARENTAL_CONTROL_ENABLED);
             MOVED_TO_SECURE.add(Secure.PARENTAL_CONTROL_LAST_UPDATE);
             MOVED_TO_SECURE.add(Secure.PARENTAL_CONTROL_REDIRECT_URL);
+            MOVED_TO_SECURE.add(Secure.SCRAMBLE_PIN_LAYOUT);
             MOVED_TO_SECURE.add(Secure.SETTINGS_CLASSNAME);
             MOVED_TO_SECURE.add(Secure.USE_GOOGLE_MAIL);
             MOVED_TO_SECURE.add(Secure.WIFI_NETWORKS_AVAILABLE_NOTIFICATION_ON);
@@ -3090,9 +3091,11 @@ public final class Settings {
             "lock_pattern_tactile_feedback_enabled";
 
         /**
-         * Whether to scramble a pin unlock layout
-         * @hide
+         * @deprecated Use
+         * {@link android.provider.Settings.Secure#SCRAMBLE_PIN_LAYOUT
+         * instead
          */
+        @Deprecated
         public static final String SCRAMBLE_PIN_LAYOUT =
             "lockscreen_scramble_pin_layout";
 
@@ -5783,6 +5786,12 @@ public final class Settings {
         @Deprecated
         public static final String
                 LOCK_PATTERN_TACTILE_FEEDBACK_ENABLED = "lock_pattern_tactile_feedback_enabled";
+
+        /**
+         * Whether to scramble a pin unlock layout
+         * @hide
+         */
+        public static final String SCRAMBLE_PIN_LAYOUT = "lockscreen_scramble_pin_layout";
 
         /**
          * This preference allows the device to be locked given time after screen goes off,
