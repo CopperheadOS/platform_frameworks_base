@@ -127,8 +127,8 @@ public class KeyguardPINView extends KeyguardPinBasedInputView {
             });
         }
 
-        boolean scramblePin = Settings.System.getInt(getContext().getContentResolver(),
-                Settings.System.SCRAMBLE_PIN_LAYOUT, 0) == 1;
+        boolean scramblePin = Settings.Secure.getInt(getContext().getContentResolver(),
+                Settings.Secure.SCRAMBLE_PIN_LAYOUT, 0) == 1;
 
         if (scramblePin) {
             List<Integer> digits = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 0);

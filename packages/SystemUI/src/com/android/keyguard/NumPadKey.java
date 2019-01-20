@@ -113,8 +113,8 @@ public class NumPadKey extends ViewGroup {
     }
 
     private void updateText() {
-        boolean scramblePin = Settings.System.getInt(getContext().getContentResolver(),
-                Settings.System.SCRAMBLE_PIN_LAYOUT, 0) == 1;
+        boolean scramblePin = Settings.Secure.getInt(getContext().getContentResolver(),
+                Settings.Secure.SCRAMBLE_PIN_LAYOUT, 0) == 1;
         if (mDigit >= 0) {
             mDigitText.setText(Integer.toString(mDigit));
             if (sKlondike == null) {
