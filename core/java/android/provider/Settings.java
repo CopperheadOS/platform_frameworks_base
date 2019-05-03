@@ -3094,6 +3094,7 @@ public final class Settings {
          * @deprecated Use
          * {@link android.provider.Settings.Secure#SCRAMBLE_PIN_LAYOUT
          * instead
+         * @hide
          */
         @Deprecated
         public static final String SCRAMBLE_PIN_LAYOUT =
