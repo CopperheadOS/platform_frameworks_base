@@ -838,10 +838,12 @@ public class AppOpsManager {
     public static final int OP_ACCESS_MEDIA_LOCATION = 90;
     /** @hide */
     public static final int OP_READ_CLIPBOARD_BACKGROUND = 91;
+    /** @hide Record Audio in the background */
+    public static final int OP_RECORD_AUDIO_BACKGROUND = 92;
 
     /** @hide */
     @UnsupportedAppUsage
-    public static final int _NUM_OP = 92;
+    public static final int _NUM_OP = 93;
 
     /** Access to coarse location information. */
     public static final String OPSTR_COARSE_LOCATION = "android:coarse_location";
@@ -1284,6 +1286,7 @@ public class AppOpsManager {
             OP_READ_DEVICE_IDENTIFIERS,         // READ_DEVICE_IDENTIFIERS
             OP_ACCESS_MEDIA_LOCATION,           // ACCESS_MEDIA_LOCATION
             OP_READ_CLIPBOARD_BACKGROUND,       // READ_CLIPBOARD_BACKGROUND
+            OP_RECORD_AUDIO_BACKGROUND,         // RECORD_AUDIO_BACKGROUND
     };
 
     /**
@@ -1381,7 +1384,8 @@ public class AppOpsManager {
             OPSTR_ACCESS_ACCESSIBILITY,
             OPSTR_READ_DEVICE_IDENTIFIERS,
             OPSTR_ACCESS_MEDIA_LOCATION,
-            null
+            null,
+            null,
     };
 
     /**
@@ -1481,6 +1485,7 @@ public class AppOpsManager {
             "READ_DEVICE_IDENTIFIERS",
             "ACCESS_MEDIA_LOCATION",
             "READ_CLIPBOARD_BACKGROUND",
+            "RECORD_AUDIO_BACKGROUND",
     };
 
     /**
@@ -1581,6 +1586,7 @@ public class AppOpsManager {
             null, // no direct permission for OP_READ_DEVICE_IDENTIFIERS
             Manifest.permission.ACCESS_MEDIA_LOCATION,
             null, // no permission for reading clipboard in the background
+            android.Manifest.permission.RECORD_AUDIO,
     };
 
     /**
@@ -1681,6 +1687,7 @@ public class AppOpsManager {
             null, // READ_DEVICE_IDENTIFIERS
             null, // ACCESS_MEDIA_LOCATION
             null, // READ_CLIPBOARD_BACKGROUND
+            UserManager.DISALLOW_RECORD_AUDIO, // RECORD_AUDIO_BACKGROUND
     };
 
     /**
@@ -1780,6 +1787,7 @@ public class AppOpsManager {
             false, // READ_DEVICE_IDENTIFIERS
             false, // ACCESS_MEDIA_LOCATION
             false, // READ_CLIPBOARD_BACKGROUND
+            false, // RECORD_AUDIO_BACKGROUND
     };
 
     /**
@@ -1878,6 +1886,7 @@ public class AppOpsManager {
             AppOpsManager.MODE_ERRORED, // READ_DEVICE_IDENTIFIERS
             AppOpsManager.MODE_ALLOWED, // ALLOW_MEDIA_LOCATION
             AppOpsManager.MODE_IGNORED,  // OP_READ_CLIPBOARD_BACKGROUND
+            AppOpsManager.MODE_ALLOWED,  // OP_RECORD_AUDIO_BACKGROUND
     };
 
     /**
@@ -1980,6 +1989,7 @@ public class AppOpsManager {
             false, // READ_DEVICE_IDENTIFIERS
             false, // ACCESS_MEDIA_LOCATION
             false, // READ_CLIPBOARD_BACKGROUND
+            false, // RECORD_AUDIO_BACKGROUND
     };
 
     /**
@@ -2043,6 +2053,7 @@ public class AppOpsManager {
 
         // All the Ops having a matching background op
         sOpToBgOp.put(OP_READ_CLIPBOARD, OP_READ_CLIPBOARD_BACKGROUND);
+        sOpToBgOp.put(OP_RECORD_AUDIO, OP_RECORD_AUDIO_BACKGROUND);
     }
 
     /** @hide */
